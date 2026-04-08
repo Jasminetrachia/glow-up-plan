@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Glow Up Plan 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#fff7f0 0%,#fff0f9 50%,#f0f4ff 100%);min-height:100vh;padding-bottom:60px}
+button{font-family:'Nunito',sans-serif;cursor:pointer}
+input{font-family:'Nunito',sans-serif}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#ff6b6b,#ff8e53,#ffd166);padding:28px 20px 22px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.15)}
+.header::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.1)}
+.header-emoji{font-size:36px;margin-bottom:4px}
+.header h1{color:#fff;font-size:clamp(1.5rem,5vw,2rem);font-weight:900;letter-spacing:-0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.header p{color:rgba(255,255,255,0.9);font-size:0.85rem;margin-top:4px}
+.quote-box{margin-top:14px;background:rgba(255,255,255,0.22);border-radius:12px;padding:12px 16px;backdrop-filter:blur(8px)}
+.quote-text{font-size:0.82rem;color:#fff;font-style:italic;line-height:1.5}
+.quote-source{font-size:0.7rem;color:rgba(255,255,255,0.8);margin-top:3px}
+.quote-type{font-size:0.65rem;color:rgba(255,255,255,0.7);margin-top:2px}
+
+/* TABS */
+.tabs{display:flex;overflow-x:auto;padding:12px 12px 0;gap:8px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,0.06);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:8px 14px;border-radius:100px;border:none;font-size:0.78rem;font-weight:700;transition:all 0.2s;background:rgba(0,0,0,0.05);color:#666}
+.tab.active{background:linear-gradient(135deg,#ff6b6b,#ff8e53);color:#fff;box-shadow:0 4px 12px rgba(255,107,107,0.4)}
+
+/* CONTENT */
+.content{max-width:700px;margin:0 auto;padding:20px 16px}
+
+/* CARDS */
+.card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,0.07);margin-bottom:16px}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.stat-card{background:#fff;border-radius:16px;padding:14px 10px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.07)}
+.stat-emoji{font-size:22px}
+.stat-value{font-weight:900;font-size:1.1rem;margin-top:2px}
+.stat-label{font-size:0.68rem;color:#888;margin-top:2px}
+
+/* PROGRESS BAR */
+.progress-wrap{background:#f0f0f0;border-radius:100px;height:14px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#ff6b6b,#ffd166);transition:width 0.5s ease}
+.progress-small .progress-wrap{height:8px}
+
+/* AREA BADGE */
+.area-badge{display:inline-block;font-weight:800;font-size:0.78rem;padding:4px 14px;border-radius:100px;margin-bottom:10px}
+
+/* GOAL ITEM */
+.goal-item{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden;margin-bottom:8px;border:2px solid transparent;transition:border-color 0.2s}
+.goal-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.goal-check{width:24px;height:24px;border-radius:8px;border:2px solid #ddd;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;font-size:13px;font-weight:900;color:#fff}
+.goal-label{font-size:0.88rem;font-weight:600;color:#333;flex:1;line-height:1.4;transition:all 0.2s}
+.goal-label.done{color:#aaa;text-decoration:line-through}
+.goal-arrow{color:#ccc;font-size:0.8rem}
+.goal-how{padding:0 16px 14px 52px}
+.goal-how-title{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.goal-how-text{font-size:0.82rem;color:#666;line-height:1.7}
+
+/* HABIT ITEM */
+.habit-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #f5f5f5;cursor:pointer;transition:background 0.15s}
+.habit-item:last-child{border-bottom:none}
+.habit-item.done-bg{background:rgba(16,185,129,0.04)}
+.habit-check{width:26px;height:26px;border-radius:8px;border:2px solid #e0e0e0;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;font-size:13px;font-weight:900;color:#fff}
+.habit-label{font-size:0.88rem;color:#333;font-weight:500;transition:all 0.2s}
+.habit-label.done{color:#aaa;text-decoration:line-through}
+
+/* SKILL CARD */
+.skill-card{background:#fff;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,0.07);margin-bottom:14px}
+.skill-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.skill-emoji{font-size:24px}
+.skill-name{font-weight:800;font-size:0.92rem;color:#333}
+.skill-level-text{font-size:0.72rem;color:#3b82f6;font-weight:600}
+.skill-bars{display:flex;gap:6px;margin-bottom:8px}
+.skill-bar{flex:1;height:8px;border-radius:100px;cursor:pointer;transition:all 0.2s;background:#eee}
+.skill-next{font-size:0.72rem;color:#888}
+.skill-next span{color:#3b82f6;font-weight:600}
+
+/* SCHOOL */
+.school-title{font-weight:800;font-size:0.9rem;margin-bottom:12px}
+.input-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.input-row input{flex:1;min-width:80px;padding:10px 14px;border-radius:10px;border:1.5px solid #f0f0f0;font-size:0.85rem;outline:none}
+.input-row input:focus{border-color:#ff8e53}
+.add-btn{padding:10px 16px;border-radius:10px;border:none;color:#fff;font-weight:800;font-size:0.9rem}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f5f5f5}
+.task-row:last-child{border-bottom:none}
+.task-check{width:22px;height:22px;border-radius:6px;border:2px solid #ddd;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;font-size:11px;font-weight:900;color:#fff;transition:all 0.2s}
+.task-text{flex:1;font-size:0.85rem;color:#333;font-weight:500}
+.task-text.done{color:#bbb;text-decoration:line-through}
+.del-btn{background:none;border:none;color:#ddd;font-size:1rem;padding:0 4px}
+.del-btn:hover{color:#ff6b6b}
+.priority-btn{padding:4px 10px;border-radius:100px;border:none;font-size:0.68rem;font-weight:700;cursor:pointer;transition:all 0.2s}
+.countdown-badge{padding:4px 10px;border-radius:10px;font-size:0.72rem;font-weight:800;color:#fff;flex-shrink:0}
+.exam-date{font-size:0.72rem;color:#aaa}
+.empty-msg{font-size:0.8rem;color:#ccc;text-align:center;padding:10px 0}
+
+/* SUCCESS BANNER */
+.success-banner{background:linear-gradient(135deg,#10b981,#06d6a0);border-radius:16px;padding:20px;text-align:center;color:#fff;margin-top:16px}
+.success-banner .big{font-size:32px}
+.success-banner .title{font-weight:900;font-size:1rem;margin-top:6px}
+.success-banner .sub{font-size:0.82rem;opacity:0.9;margin-top:4px}
+
+/* SECTION TITLE */
+.section-title{font-weight:900;font-size:1.1rem;color:#333;margin-bottom:4px}
+.section-sub{font-size:0.78rem;color:#888;margin-bottom:16px}
+
+/* HIDDEN */
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-emoji">🌸</div>
+  <h1>The Glow Up Plan</h1>
+  <p>Your roadmap to becoming your best self ✨</p>
+  <div class="quote-box">
+    <div class="quote-text" id="quoteText"></div>
+    <div class="quote-source" id="quoteSource"></div>
+    <div class="quote-type" id="quoteType"></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab(0)">🌟 Dashboard</button>
+  <button class="tab" onclick="switchTab(1)">✅ Goals</button>
+  <button class="tab" onclick="switchTab(2)">📅 Daily Habits</button>
+  <button class="tab" onclick="switchTab(3)">🚀 Skills</button>
+  <button class="tab" onclick="switchTab(4)">📚 School</button>
+</div>
+
+<div class="content">
+
+  <!-- DASHBOARD -->
+  <div id="tab0">
+    <div class="stats-grid">
+      <div class="stat-card" style="border:2px solid rgba(16,185,129,0.15)">
+        <div class="stat-emoji">🎯</div>
+        <div class="stat-value" id="statGoals" style="color:#10b981">0/20</div>
+        <div class="stat-label">Goals Done</div>
+      </div>
+      <div class="stat-card" style="border:2px solid rgba(245,158,11,0.15)">
+        <div class="stat-emoji">⚡</div>
+        <div class="stat-value" id="statHabits" style="color:#f59e0b">0/15</div>
+        <div class="stat-label">Habits Today</div>
+      </div>
+      <div class="stat-card" style="border:2px solid rgba(236,72,153,0.15)">
+        <div class="stat-emoji">🔥</div>
+        <div class="stat-value" id="statStreak" style="color:#ec4899">0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:800;font-size:0.9rem;color:#333;margin-bottom:10px">Overall Glow Up Progress 🌸</div>
+      <div class="progress-wrap"><div class="progress-fill" id="overallBar" style="width:0%"></div></div>
+      <div style="font-size:0.75rem;color:#888;margin-top:6px" id="overallPct">0% of your goals achieved</div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:800;font-size:0.9rem;color:#333;margin-bottom:14px">Progress by Area</div>
+      <div id="areaProgress"></div>
+    </div>
+  </div>
+
+  <!-- GOALS -->
+  <div id="tab1" class="hidden">
+    <div class="section-title">Your Glow Up Goals ✨</div>
+    <div style="font-size:0.78rem;color:#888;margin-bottom:16px">Tap any goal to see how to achieve it</div>
+    <div id="goalsList"></div>
+  </div>
+
+  <!-- HABITS -->
+  <div id="tab2" class="hidden">
+    <div class="section-title">Today's Habits 📅</div>
+    <div style="font-size:0.78rem;color:#888;margin-bottom:16px" id="habitDate"></div>
+    <div class="card" style="padding:4px 0" id="habitsList"></div>
+    <div id="successBanner" class="hidden">
+      <div class="success-banner">
+        <div class="big">🎉</div>
+        <div class="title">Perfect Day, Jasmine!</div>
+        <div class="sub">You completed every habit today. You're glowing! ✨</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div id="tab3" class="hidden">
+    <div class="section-title">Skills Tracker 🚀</div>
+    <div style="font-size:0.78rem;color:#888;margin-bottom:16px">Tap a level bar to update your progress</div>
+    <div id="skillsList"></div>
+  </div>
+
+  <!-- SCHOOL -->
+  <div id="tab4" class="hidden">
+    <div class="section-title">School Hub 📚</div>
+    <div style="margin-bottom:16px"></div>
+
+    <!-- Homework -->
+    <div class="card">
+      <div class="school-title" style="color:#ec4899">📝 Homework & Incomplete Work</div>
+      <div class="input-row">
+        <input id="hwInput" placeholder="Add a task... (press Enter)" onkeydown="if(event.key==='Enter')addHomework()"/>
+        <button class="add-btn" style="background:#ec4899" onclick="addHomework()">+</button>
+      </div>
+      <div id="hwList"><div class="empty-msg">No tasks yet — add one above 🎉</div></div>
+    </div>
+
+    <!-- Exams -->
+    <div class="card">
+      <div class="school-title" style="color:#f59e0b">📅 Exam Countdown</div>
+      <div class="input-row">
+        <input id="examSubject" placeholder="Subject" style="min-width:100px"/>
+        <input type="date" id="examDate" style="min-width:120px"/>
+        <button class="add-btn" style="background:#f59e0b" onclick="addExam()">Add</button>
+      </div>
+      <div id="examList"><div class="empty-msg">No exams added yet</div></div>
+    </div>
+
+    <!-- Subjects -->
+    <div class="card">
+      <div class="school-title" style="color:#8b5cf6">📊 Subject Priority List</div>
+      <div class="input-row">
+        <input id="subjectInput" placeholder="Add subject..." onkeydown="if(event.key==='Enter')addSubject()"/>
+        <button class="add-btn" style="background:#8b5cf6" onclick="addSubject()">+</button>
+      </div>
+      <div id="subjectList"><div class="empty-msg">Add your subjects above</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'jasmine_glowup_v2';
+
+const QUOTES = [
+  {text:"Indeed, with hardship comes ease.",type:"islamic",source:"Quran 94:6"},
+  {text:"She believed she could, so she did.",type:"motivational",source:""},
+  {text:"And He found you lost and guided you.",type:"islamic",source:"Quran 93:7"},
+  {text:"Small steps every day beat big steps never.",type:"motivational",source:""},
+  {text:"Verily, Allah does not change the condition of a people until they change what is in themselves.",type:"islamic",source:"Quran 13:11"},
+  {text:"You are one decision away from a completely different life.",type:"motivational",source:""},
+  {text:"Whoever is grateful, I will give him more.",type:"islamic",source:"Quran 14:7"},
+  {text:"Discipline is choosing what you want most over what you want now.",type:"motivational",source:""},
+];
+
+const AREAS = [
+  {name:"Faith 🤲",color:"#10b981",light:"rgba(16,185,129,0.12)",border:"rgba(16,185,129,0.3)"},
+  {name:"Character 💎",color:"#8b5cf6",light:"rgba(139,92,246,0.12)",border:"rgba(139,92,246,0.3)"},
+  {name:"Health 💪",color:"#f59e0b",light:"rgba(245,158,11,0.12)",border:"rgba(245,158,11,0.3)"},
+  {name:"School 📚",color:"#ec4899",light:"rgba(236,72,153,0.12)",border:"rgba(236,72,153,0.3)"},
+  {name:"Skills 🚀",color:"#3b82f6",light:"rgba(59,130,246,0.12)",border:"rgba(59,130,246,0.3)"},
+];
+
+const GOALS = [
+  {id:"pray",area:"Faith 🤲",label:"Pray all 5 salah on time every day",how:"Set phone alarms for each prayer. Start with Fajr — it sets the tone for your whole day."},
+  {id:"believer",area:"Faith 🤲",label:"Be a good Muslim & strong believer",how:"Read 1 page of Quran daily. Make du'a in the morning and before sleep. Reflect, don't just rush through ibadah."},
+  {id:"humble",area:"Character 💎",label:"Be a humble person",how:"Before speaking, ask: is this kind, necessary, true? Practice saying 'I don't know' and meaning it."},
+  {id:"procrastinate",area:"Character 💎",label:"Avoid procrastination",how:"Use the 2-minute rule: if it takes under 2 min, do it now. Break big tasks into tiny steps. Start ugly — perfection kills progress."},
+  {id:"adaptable",area:"Character 💎",label:"Build a fast-learning, adaptable mindset",how:"Learn in 25-min focused bursts (Pomodoro). Teach what you learn to yourself out loud. Embrace confusion — it means you're growing."},
+  {id:"perfect_self",area:"Character 💎",label:"Become the best version of myself",how:"Journal one win and one lesson each night. Review your goals weekly. Who do you want to be? Act as her today."},
+  {id:"sleep",area:"Health 💪",label:"Fix sleep — sleep by 11PM, wake by 7AM",how:"No screens 30 mins before bed. Shift bedtime 30 mins earlier every 3 days until you reach 11PM."},
+  {id:"diet",area:"Health 💪",label:"Improve diet — cut junk, eat balanced",how:"Add before you subtract: add a fruit or veggie to each meal first. Drink water before every meal."},
+  {id:"exercise",area:"Health 💪",label:"Exercise & run every day",how:"Start with 10-min walks, then jog. Build to 20-min runs. Follow a beginner bodyweight routine on YouTube."},
+  {id:"muscles",area:"Health 💪",label:"Build strength & muscle",how:"3x/week bodyweight: push-ups, squats, planks. Add resistance bands. Progress slowly — form before weight."},
+  {id:"exams",area:"School 📚",label:"Focus on exams & revision",how:"Use active recall — test yourself, don't just re-read. Make flashcards. Revise topics within 24hrs of learning them."},
+  {id:"homework",area:"School 📚",label:"Complete all incomplete work on time",how:"List every pending task tonight. Do the hardest/oldest one first. One subject per study block."},
+  {id:"reading",area:"School 📚",label:"Build a daily reading habit",how:"Start with 10 pages a day of any book you enjoy. Keep it visible on your desk. Read before sleeping instead of scrolling."},
+  {id:"cabinets",area:"School 📚",label:"Clean & organise my workspace/cabinets",how:"Spend 15 mins decluttering today. A clean space = a clear mind. Everything needs a home."},
+  {id:"github",area:"Skills 🚀",label:"Become a developer on GitHub",how:"Build one project per month. Write clear READMEs. Push code daily, even small changes."},
+  {id:"youtube",area:"Skills 🚀",label:"Start & grow a YouTube channel",how:"Pick one niche (dev journey, Roblox, AI). Film one video this week — don't wait for perfect."},
+  {id:"editing",area:"Skills 🚀",label:"Learn YouTube video editing",how:"Start with CapCut (free, mobile-friendly). Watch 3 editing tutorials. Edit your first video before learning more."},
+  {id:"ai",area:"Skills 🚀",label:"Become an AI automation expert",how:"Follow your 30-day AI plan. Build projects. Document everything on GitHub. Join AI communities on Discord."},
+  {id:"python",area:"Skills 🚀",label:"Learn Python",how:"Use CS50P (free Harvard course) or freeCodeCamp Python. Code 20 min daily. Build small scripts from day 1."},
+  {id:"roblox",area:"Skills 🚀",label:"Learn Roblox Studio & Luau scripting",how:"Follow Roblox Creator Hub tutorials. Build on your Click to Earn game. Study one new script concept per week."},
+];
+
+const HABITS = [
+  {id:"h_fajr",label:"🌅 Prayed Fajr",color:"#10b981"},
+  {id:"h_dhuhr",label:"☀️ Prayed Dhuhr",color:"#10b981"},
+  {id:"h_asr",label:"🌤️ Prayed Asr",color:"#10b981"},
+  {id:"h_maghrib",label:"🌆 Prayed Maghrib",color:"#10b981"},
+  {id:"h_isha",label:"🌙 Prayed Isha",color:"#10b981"},
+  {id:"h_sleep",label:"😴 Slept before 11PM",color:"#6366f1"},
+  {id:"h_wake",label:"⏰ Woke before 7AM",color:"#6366f1"},
+  {id:"h_exercise",label:"🏃‍♀️ Exercised / ran today",color:"#f59e0b"},
+  {id:"h_water",label:"💧 Drank enough water",color:"#3b82f6"},
+  {id:"h_nojunk",label:"🥗 No junk food today",color:"#f59e0b"},
+  {id:"h_study",label:"📖 Studied / did homework",color:"#ec4899"},
+  {id:"h_read",label:"📚 Read 10 pages",color:"#ec4899"},
+  {id:"h_noProc",label:"✅ Avoided procrastination",color:"#8b5cf6"},
+  {id:"h_quran",label:"📿 Read Quran",color:"#10b981"},
+  {id:"h_journal",label:"✍️ Journaled one win",color:"#8b5cf6"},
+];
+
+const SKILLS = [
+  {id:"github",emoji:"💻",name:"GitHub Dev",levels:["Not started","Learning basics","Built 1 project","Building regularly","Portfolio ready"]},
+  {id:"youtube",emoji:"🎬",name:"YouTube Channel",levels:["Not started","Researching","First video filmed","Posting regularly","Growing channel"]},
+  {id:"editing",emoji:"✂️",name:"Video Editing",levels:["Not started","Tried CapCut","Edited 1 video","Getting good","Pro level"]},
+  {id:"ai",emoji:"🤖",name:"AI Automation",levels:["Not started","Week 1 done","Built first automation","Multiple projects","Expert"]},
+  {id:"python",emoji:"🐍",name:"Python",levels:["Not started","Learning syntax","Built small scripts","Intermediate projects","Confident coder"]},
+  {id:"roblox",emoji:"🎮",name:"Roblox & Luau",levels:["Not started","Studio basics","First script","Building games","Advanced scripting"]},
+];
+
+// DATA
+function loadData(){
+  try{const r=localStorage.getItem(STORAGE_KEY);if(r)return JSON.parse(r);}catch{}
+  return {goals:{},habits:{},skills:{},school:{homework:[],exams:[],subjects:[]}};
+}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(D));}
+let D=loadData();
+
+// TODAY
+const today=new Date().toISOString().slice(0,10);
+
+// QUOTE
+const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+document.getElementById('quoteText').textContent='"'+q.text+'"';
+document.getElementById('quoteSource').textContent=q.source?'— '+q.source:'';
+document.getElementById('quoteType').textContent=q.type==='islamic'?'☪️ Islamic reminder':'💫 Motivation';
+
+// TABS
+let currentTab=0;
+function switchTab(i){
+  document.getElementById('tab'+currentTab).classList.add('hidden');
+  document.querySelectorAll('.tab')[currentTab].classList.remove('active');
+  currentTab=i;
+  document.getElementById('tab'+i).classList.remove('hidden');
+  document.querySelectorAll('.tab')[i].classList.add('active');
+  if(i===0)renderDashboard();
+}
+
+// EXPANDED GOAL
+let expandedGoal=null;
+
+// RENDER GOALS
+function renderGoals(){
+  const el=document.getElementById('goalsList');
+  let html='';
+  AREAS.forEach(area=>{
+    const areaGoals=GOALS.filter(g=>g.area===area.name);
+    html+=`<div class="area-badge" style="background:${area.light};border:1px solid ${area.border};color:${area.color}">${area.name}</div>`;
+    areaGoals.forEach(g=>{
+      const done=!!D.goals[g.id];
+      const exp=expandedGoal===g.id;
+      html+=`<div class="goal-item" id="gi_${g.id}" style="${done?'border-color:'+getAreaColor(g.area):''}">
+        <div class="goal-header" onclick="toggleGoalExpand('${g.id}')">
+          <div class="goal-check" id="gc_${g.id}" style="border-color:${done?getAreaColor(g.area):'#ddd'};background:${done?getAreaColor(g.area):'#fff'}" onclick="event.stopPropagation();toggleGoal('${g.id}')">${done?'✓':''}</div>
+          <span class="goal-label ${done?'done':''}" id="gl_${g.id}">${g.label}</span>
+          <span class="goal-arrow">${exp?'▲':'▼'}</span>
+        </div>
+        ${exp?`<div class="goal-how"><div class="goal-how-title" style="color:${getAreaColor(g.area)}">How to achieve this</div><div class="goal-how-text">${g.how}</div></div>`:''}
+      </div>`;
+    });
+    html+='<div style="margin-bottom:16px"></div>';
+  });
+  el.innerHTML=html;
+}
+
+function getAreaColor(areaName){
+  return AREAS.find(a=>a.name===areaName)?.color||'#888';
+}
+
+function toggleGoal(id){
+  D.goals[id]=!D.goals[id];
+  save();
+  renderGoals();
+  renderDashboard();
+}
+
+function toggleGoalExpand(id){
+  expandedGoal=expandedGoal===id?null:id;
+  renderGoals();
+}
+
+// RENDER HABITS
+function renderHabits(){
+  const dateEl=document.getElementById('habitDate');
+  const d=new Date();
+  dateEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})+' · '+habitsDoneToday()+'/'+HABITS.length+' done';
+  let html='';
+  HABITS.forEach(h=>{
+    const done=isHabitDone(h.id);
+    html+=`<div class="habit-item ${done?'done-bg':''}" onclick="toggleHabit('${h.id}')">
+      <div class="habit-check" style="border-color:${done?h.color:'#e0e0e0'};background:${done?h.color:'#fff'}">${done?'✓':''}</div>
+      <span class="habit-label ${done?'done':''}">${h.label}</span>
+    </div>`;
+  });
+  document.getElementById('habitsList').innerHTML=html;
+  const banner=document.getElementById('successBanner');
+  if(habitsDoneToday()===HABITS.length){banner.classList.remove('hidden');}
+  else{banner.classList.add('hidden');}
+}
+
+function isHabitDone(id){return !!(D.habits&&D.habits[today+'_'+id]);}
+function habitsDoneToday(){return HABITS.filter(h=>isHabitDone(h.id)).length;}
+
+function toggleHabit(id){
+  if(!D.habits)D.habits={};
+  D.habits[today+'_'+id]=!D.habits[today+'_'+id];
+  save();
+  renderHabits();
+  renderDashboard();
+}
+
+// RENDER SKILLS
+function renderSkills(){
+  let html='';
+  SKILLS.forEach(sk=>{
+    const level=D.skills&&D.skills[sk.id]!=null?D.skills[sk.id]:0;
+    let bars='';
+    sk.levels.forEach((_,i)=>{
+      bars+=`<div class="skill-bar" onclick="setSkill('${sk.id}',${i})" style="background:${i<=level?'linear-gradient(90deg,#3b82f6,#6366f1)':'#eee'}"></div>`;
+    });
+    html+=`<div class="skill-card">
+      <div class="skill-header">
+        <span class="skill-emoji">${sk.emoji}</span>
+        <div>
+          <div class="skill-name">${sk.name}</div>
+          <div class="skill-level-text">${sk.levels[level]}</div>
+        </div>
+      </div>
+      <div class="skill-bars">${bars}</div>
+      <div class="skill-next">Next: <span>${level<4?sk.levels[level+1]:'Max level reached! 🏆'}</span></div>
+    </div>`;
+  });
+  document.getElementById('skillsList').innerHTML=html;
+}
+
+function setSkill(id,val){
+  if(!D.skills)D.skills={};
+  D.skills[id]=val;
+  save();
+  renderSkills();
+}
+
+// RENDER DASHBOARD
+function renderDashboard(){
+  const total=GOALS.length;
+  const done=GOALS.filter(g=>D.goals&&D.goals[g.id]).length;
+  const pct=Math.round((done/total)*100);
+  document.getElementById('statGoals').textContent=done+'/'+total;
+  document.getElementById('statHabits').textContent=habitsDoneToday()+'/'+HABITS.length;
+  document.getElementById('overallBar').style.width=pct+'%';
+  document.getElementById('overallPct').textContent=pct+'% of your goals achieved';
+
+  // streak (simple: count consecutive days with all habits done)
+  let streak=0;
+  const checkDay=(offset)=>{
+    const d=new Date();d.setDate(d.getDate()-offset);
+    const ds=d.toISOString().slice(0,10);
+    return HABITS.every(h=>!!(D.habits&&D.habits[ds+'_'+h.id]));
+  };
+  let i=0;
+  while(checkDay(i)){streak++;i++;if(i>365)break;}
+  document.getElementById('statStreak').textContent=streak;
+
+  // area progress
+  let aHtml='';
+  AREAS.forEach(area=>{
+    const aGoals=GOALS.filter(g=>g.area===area.name);
+    const aDone=aGoals.filter(g=>D.goals&&D.goals[g.id]).length;
+    const aPct=Math.round((aDone/aGoals.length)*100);
+    aHtml+=`<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:0.8rem;font-weight:700;color:#444">${area.name}</span>
+        <span style="font-size:0.75rem;color:#888">${aDone}/${aGoals.length}</span>
+      </div>
+      <div class="progress-wrap progress-small"><div style="height:100%;width:${aPct}%;background:${area.color};border-radius:100px;transition:width 0.5s"></div></div>
+    </div>`;
+  });
+  document.getElementById('areaProgress').innerHTML=aHtml;
+}
+
+// SCHOOL — HOMEWORK
+function renderHomework(){
+  const hw=D.school?.homework||[];
+  if(!hw.length){document.getElementById('hwList').innerHTML='<div class="empty-msg">No tasks yet — add one above 🎉</div>';return;}
+  let html='';
+  hw.forEach(h=>{
+    html+=`<div class="task-row">
+      <div class="task-check" id="hwc_${h.id}" style="border-color:${h.done?'#ec4899':'#ddd'};background:${h.done?'#ec4899':'#fff'}" onclick="toggleHomework(${h.id})">${h.done?'✓':''}</div>
+      <span class="task-text ${h.done?'done':''}">${h.text}</span>
+      <button class="del-btn" onclick="deleteHomework(${h.id})">✕</button>
+    </div>`;
+  });
+  document.getElementById('hwList').innerHTML=html;
+}
+
+function addHomework(){
+  const v=document.getElementById('hwInput').value.trim();
+  if(!v)return;
+  if(!D.school)D.school={homework:[],exams:[],subjects:[]};
+  D.school.homework.push({id:Date.now(),text:v,done:false});
+  document.getElementById('hwInput').value='';
+  save();renderHomework();
+}
+
+function toggleHomework(id){
+  D.school.homework=D.school.homework.map(h=>h.id===id?{...h,done:!h.done}:h);
+  save();renderHomework();
+}
+
+function deleteHomework(id){
+  D.school.homework=D.school.homework.filter(h=>h.id!==id);
+  save();renderHomework();
+}
+
+// SCHOOL — EXAMS
+function renderExams(){
+  const exams=(D.school?.exams||[]).slice().sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(!exams.length){document.getElementById('examList').innerHTML='<div class="empty-msg">No exams added yet</div>';return;}
+  let html='';
+  exams.forEach(e=>{
+    const diff=Math.ceil((new Date(e.date)-new Date(today))/86400000);
+    const color=diff<=3?'#ef4444':diff<=7?'#f59e0b':'#10b981';
+    const label=diff>0?diff+'d':diff===0?'TODAY':'PAST';
+    const dateStr=new Date(e.date).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    html+=`<div class="task-row">
+      <div class="countdown-badge" style="background:${color}">${label}</div>
+      <span class="task-text" style="font-weight:600">${e.subject}</span>
+      <span class="exam-date">${dateStr}</span>
+      <button class="del-btn" onclick="deleteExam(${e.id})">✕</button>
+    </div>`;
+  });
+  document.getElementById('examList').innerHTML=html;
+}
+
+function addExam(){
+  const sub=document.getElementById('examSubject').value.trim();
+  const date=document.getElementById('examDate').value;
+  if(!sub||!date)return;
+  if(!D.school)D.school={homework:[],exams:[],subjects:[]};
+  D.school.exams.push({id:Date.now(),subject:sub,date:date});
+  document.getElementById('examSubject').value='';
+  document.getElementById('examDate').value='';
+  save();renderExams();
+}
+
+function deleteExam(id){
+  D.school.exams=D.school.exams.filter(e=>e.id!==id);
+  save();renderExams();
+}
+
+// SCHOOL — SUBJECTS
+function renderSubjects(){
+  const subs=D.school?.subjects||[];
+  if(!subs.length){document.getElementById('subjectList').innerHTML='<div class="empty-msg">Add your subjects above</div>';return;}
+  const pColors={high:'#ef4444',medium:'#f59e0b',low:'#10b981'};
+  let html='';
+  subs.forEach(s=>{
+    const btns=['high','medium','low'].map(p=>`<button class="priority-btn" onclick="setSubjectPriority(${s.id},'${p}')" style="background:${s.priority===p?pColors[p]:'#f0f0f0'};color:${s.priority===p?'#fff':'#aaa'}">${p}</button>`).join('');
+    html+=`<div class="task-row"><span class="task-text" style="font-weight:600">${s.text}</span>${btns}<button class="del-btn" onclick="deleteSubject(${s.id})">✕</button></div>`;
+  });
+  document.getElementById('subjectList').innerHTML=html;
+}
+
+function addSubject(){
+  const v=document.getElementById('subjectInput').value.trim();
+  if(!v)return;
+  if(!D.school)D.school={homework:[],exams:[],subjects:[]};
+  D.school.subjects.push({id:Date.now(),text:v,priority:'medium'});
+  document.getElementById('subjectInput').value='';
+  save();renderSubjects();
+}
+
+function setSubjectPriority(id,p){
+  D.school.subjects=D.school.subjects.map(s=>s.id===id?{...s,priority:p}:s);
+  save();renderSubjects();
+}
+
+function deleteSubject(id){
+  D.school.subjects=D.school.subjects.filter(s=>s.id!==id);
+  save();renderSubjects();
+}
+
+// INIT
+renderDashboard();
+renderGoals();
+renderHabits();
+renderSkills();
+renderHomework();
+renderExams();
+renderSubjects();
+</script>
+</body>
+</html>
