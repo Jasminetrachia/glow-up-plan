@@ -1,0 +1,350 @@
+import { useState, useEffect } from "react";
+
+const STORAGE_KEY = "jasmine_glowup_v3";
+
+const QUOTES = [
+  { text: "Indeed, with hardship comes ease.", type: "islamic", source: "Quran 94:6" },
+  { text: "She believed she could, so she did.", type: "motivational", source: "" },
+  { text: "And He found you lost and guided you.", type: "islamic", source: "Quran 93:7" },
+  { text: "Small steps every day beat big steps never.", type: "motivational", source: "" },
+  { text: "Allah does not change the condition of a people until they change what is in themselves.", type: "islamic", source: "Quran 13:11" },
+  { text: "You are one decision away from a completely different life.", type: "motivational", source: "" },
+  { text: "Whoever is grateful, I will give him more.", type: "islamic", source: "Quran 14:7" },
+  { text: "Discipline is choosing what you want most over what you want now.", type: "motivational", source: "" },
+];
+
+const AREAS = [
+  { name: "Faith 🤲", color: "#10b981", light: "rgba(16,185,129,0.12)", border: "rgba(16,185,129,0.3)" },
+  { name: "Character 💎", color: "#8b5cf6", light: "rgba(139,92,246,0.12)", border: "rgba(139,92,246,0.3)" },
+  { name: "Health 💪", color: "#f59e0b", light: "rgba(245,158,11,0.12)", border: "rgba(245,158,11,0.3)" },
+  { name: "School 📚", color: "#ec4899", light: "rgba(236,72,153,0.12)", border: "rgba(236,72,153,0.3)" },
+  { name: "Skills 🚀", color: "#3b82f6", light: "rgba(59,130,246,0.12)", border: "rgba(59,130,246,0.3)" },
+];
+
+const GOALS = [
+  { id: "pray", area: "Faith 🤲", label: "Pray all 5 salah on time every day", how: "Set phone alarms for each prayer. Start with Fajr — it sets the tone for your whole day." },
+  { id: "believer", area: "Faith 🤲", label: "Be a good Muslim & strong believer", how: "Read 1 page of Quran daily. Make du'a in the morning and before sleep." },
+  { id: "humble", area: "Character 💎", label: "Be a humble person", how: "Before speaking, ask: is this kind, necessary, true? Practice saying 'I don't know' and meaning it." },
+  { id: "procrastinate", area: "Character 💎", label: "Avoid procrastination", how: "Use the 2-minute rule: if it takes under 2 min, do it now. Break big tasks into tiny steps." },
+  { id: "adaptable", area: "Character 💎", label: "Build a fast-learning, adaptable mindset", how: "Learn in 25-min Pomodoro bursts. Teach what you learn out loud. Embrace confusion — it means you're growing." },
+  { id: "perfect_self", area: "Character 💎", label: "Become the best version of myself", how: "Journal one win and one lesson each night. Who do you want to be? Act as her today." },
+  { id: "sleep", area: "Health 💪", label: "Fix sleep — sleep by 11PM, wake by 7AM", how: "No screens 30 mins before bed. Shift bedtime 30 mins earlier every 3 days." },
+  { id: "diet", area: "Health 💪", label: "Improve diet — cut junk, eat balanced", how: "Add before you subtract: add a fruit or veggie to each meal first. Drink water before every meal." },
+  { id: "exercise", area: "Health 💪", label: "Exercise & run every day", how: "Start with 10-min walks, then jog. Build to 20-min runs. Follow a beginner bodyweight routine on YouTube." },
+  { id: "muscles", area: "Health 💪", label: "Build strength & muscle", how: "3x/week: push-ups, squats, planks. Progress slowly — form before weight." },
+  { id: "exams", area: "School 📚", label: "Focus on exams & revision", how: "Use active recall — test yourself, don't just re-read. Revise topics within 24hrs of learning them." },
+  { id: "homework", area: "School 📚", label: "Complete all incomplete work on time", how: "List every pending task tonight. Do the hardest/oldest one first. One subject per study block." },
+  { id: "reading", area: "School 📚", label: "Build a daily reading habit", how: "Start with 10 pages a day. Keep the book visible on your desk. Read before sleeping instead of scrolling." },
+  { id: "cabinets", area: "School 📚", label: "Clean & organise my workspace", how: "Spend 15 mins decluttering today. A clean space = a clear mind." },
+  { id: "github", area: "Skills 🚀", label: "Become a developer on GitHub", how: "Build one project per month. Write clear READMEs. Push code daily, even small changes." },
+  { id: "youtube", area: "Skills 🚀", label: "Start & grow a YouTube channel", how: "Pick one niche. Film one video this week — don't wait for perfect. Consistency beats quality at the start." },
+  { id: "editing", area: "Skills 🚀", label: "Learn YouTube video editing", how: "Start with CapCut (free, mobile-friendly). Edit your first video before learning more." },
+  { id: "ai", area: "Skills 🚀", label: "Become an AI automation expert", how: "Follow your 30-day AI plan. Build projects. Document everything on GitHub." },
+  { id: "python", area: "Skills 🚀", label: "Learn Python", how: "Use CS50P (free Harvard course) or freeCodeCamp. Code 20 min daily. Build small scripts from day 1." },
+  { id: "roblox", area: "Skills 🚀", label: "Learn Roblox Studio & Luau scripting", how: "Follow Roblox Creator Hub tutorials. Build on your Click to Earn game. One new script concept per week." },
+];
+
+const HABITS = [
+  { id: "fajr", label: "🌅 Prayed Fajr", color: "#10b981" },
+  { id: "dhuhr", label: "☀️ Prayed Dhuhr", color: "#10b981" },
+  { id: "asr", label: "🌤️ Prayed Asr", color: "#10b981" },
+  { id: "maghrib", label: "🌆 Prayed Maghrib", color: "#10b981" },
+  { id: "isha", label: "🌙 Prayed Isha", color: "#10b981" },
+  { id: "sleep", label: "😴 Slept before 11PM", color: "#6366f1" },
+  { id: "wake", label: "⏰ Woke before 7AM", color: "#6366f1" },
+  { id: "exercise", label: "🏃‍♀️ Exercised / ran today", color: "#f59e0b" },
+  { id: "water", label: "💧 Drank enough water", color: "#3b82f6" },
+  { id: "nojunk", label: "🥗 No junk food today", color: "#f59e0b" },
+  { id: "study", label: "📖 Studied / did homework", color: "#ec4899" },
+  { id: "read", label: "📚 Read 10 pages", color: "#ec4899" },
+  { id: "noproc", label: "✅ Avoided procrastination", color: "#8b5cf6" },
+  { id: "quran", label: "📿 Read Quran", color: "#10b981" },
+  { id: "journal", label: "✍️ Journaled one win", color: "#8b5cf6" },
+];
+
+const SKILLS = [
+  { id: "github", emoji: "💻", name: "GitHub Dev", levels: ["Not started", "Learning basics", "Built 1 project", "Building regularly", "Portfolio ready"] },
+  { id: "youtube", emoji: "🎬", name: "YouTube Channel", levels: ["Not started", "Researching", "First video filmed", "Posting regularly", "Growing channel"] },
+  { id: "editing", emoji: "✂️", name: "Video Editing", levels: ["Not started", "Tried CapCut", "Edited 1 video", "Getting good", "Pro level"] },
+  { id: "ai", emoji: "🤖", name: "AI Automation", levels: ["Not started", "Week 1 done", "Built first automation", "Multiple projects", "Expert"] },
+  { id: "python", emoji: "🐍", name: "Python", levels: ["Not started", "Learning syntax", "Built small scripts", "Intermediate projects", "Confident coder"] },
+  { id: "roblox", emoji: "🎮", name: "Roblox & Luau", levels: ["Not started", "Studio basics", "First script", "Building games", "Advanced scripting"] },
+];
+
+const TABS = ["🌟 Dashboard", "✅ Goals", "📅 Habits", "🚀 Skills", "📚 School"];
+
+function load() {
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch {}
+  return { goals: {}, habits: {}, skills: {}, hw: [], exams: [], subjects: [] };
+}
+
+export default function App() {
+  const [tab, setTab] = useState(0);
+  const [data, setData] = useState(load);
+  const [expanded, setExpanded] = useState(null);
+  const [hwInput, setHwInput] = useState("");
+  const [examSub, setExamSub] = useState("");
+  const [examDate, setExamDate] = useState("");
+  const [subInput, setSubInput] = useState("");
+  const [quoteIdx] = useState(() => Math.floor(Math.random() * QUOTES.length));
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+  }, [data]);
+
+  const upd = (fn) => setData(d => { const n = { ...d }; fn(n); return n; });
+
+  const toggleGoal = (id) => upd(d => { d.goals = { ...d.goals, [id]: !d.goals[id] }; });
+  const habitKey = (id) => today + "_" + id;
+  const habitDone = (id) => !!(data.habits && data.habits[habitKey(id)]);
+  const toggleHabit = (id) => upd(d => { d.habits = { ...d.habits, [habitKey(id)]: !d.habits[habitKey(id)] }; });
+  const setSkill = (id, val) => upd(d => { d.skills = { ...d.skills, [id]: val }; });
+
+  const doneGoals = GOALS.filter(g => data.goals[g.id]).length;
+  const doneHabits = HABITS.filter(h => habitDone(h.id)).length;
+  const pct = Math.round((doneGoals / GOALS.length) * 100);
+
+  const addHw = () => {
+    if (!hwInput.trim()) return;
+    upd(d => { d.hw = [...(d.hw || []), { id: Date.now(), text: hwInput.trim(), done: false }]; });
+    setHwInput("");
+  };
+  const toggleHw = (id) => upd(d => { d.hw = d.hw.map(h => h.id === id ? { ...h, done: !h.done } : h); });
+  const delHw = (id) => upd(d => { d.hw = d.hw.filter(h => h.id !== id); });
+
+  const addExam = () => {
+    if (!examSub.trim() || !examDate) return;
+    upd(d => { d.exams = [...(d.exams || []), { id: Date.now(), subject: examSub.trim(), date: examDate }]; });
+    setExamSub(""); setExamDate("");
+  };
+  const delExam = (id) => upd(d => { d.exams = d.exams.filter(e => e.id !== id); });
+
+  const addSub = () => {
+    if (!subInput.trim()) return;
+    upd(d => { d.subjects = [...(d.subjects || []), { id: Date.now(), text: subInput.trim(), priority: "medium" }]; });
+    setSubInput("");
+  };
+  const setSubPriority = (id, p) => upd(d => { d.subjects = d.subjects.map(s => s.id === id ? { ...s, priority: p } : s); });
+  const delSub = (id) => upd(d => { d.subjects = d.subjects.filter(s => s.id !== id); });
+
+  const daysUntil = (ds) => Math.ceil((new Date(ds) - new Date(today)) / 86400000);
+
+  const q = QUOTES[quoteIdx];
+
+  const C = {
+    bg: { background: "linear-gradient(135deg,#fff7f0 0%,#fff0f9 50%,#f0f4ff 100%)", minHeight: "100vh", fontFamily: "'Segoe UI',sans-serif", paddingBottom: 60 },
+    card: { background: "#fff", borderRadius: 16, padding: 18, boxShadow: "0 4px 16px rgba(0,0,0,0.07)", marginBottom: 16 },
+    btn: (active, color) => ({ padding: "8px 14px", borderRadius: 100, border: "none", cursor: "pointer", fontSize: "0.78rem", fontWeight: 700, background: active ? `linear-gradient(135deg,${color || "#ff6b6b"},${color ? color+"bb" : "#ff8e53"})` : "rgba(0,0,0,0.05)", color: active ? "#fff" : "#666", boxShadow: active ? `0 4px 12px ${color || "#ff6b6b"}55` : "none", transition: "all 0.2s", flexShrink: 0 }),
+  };
+
+  return (
+    <div style={C.bg}>
+      {/* HEADER */}
+      <div style={{ background: "linear-gradient(135deg,#ff6b6b,#ff8e53,#ffd166)", padding: "28px 20px 22px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ fontSize: 36 }}>🌸</div>
+        <h1 style={{ color: "#fff", fontSize: "clamp(1.5rem,5vw,2rem)", fontWeight: 900, margin: "4px 0", textShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>The Glow Up Plan</h1>
+        <p style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.85rem" }}>Your roadmap to becoming your best self ✨</p>
+        <div style={{ marginTop: 14, background: "rgba(255,255,255,0.22)", borderRadius: 12, padding: "12px 16px" }}>
+          <div style={{ fontSize: "0.82rem", color: "#fff", fontStyle: "italic", lineHeight: 1.5 }}>"{q.text}"</div>
+          {q.source && <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.8)", marginTop: 3 }}>— {q.source}</div>}
+          <div style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.7)", marginTop: 2 }}>{q.type === "islamic" ? "☪️ Islamic reminder" : "💫 Motivation"}</div>
+        </div>
+      </div>
+
+      {/* TABS */}
+      <div style={{ display: "flex", overflowX: "auto", padding: "12px 12px 0", gap: 8, background: "#fff", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+        {TABS.map((t, i) => <button key={i} style={C.btn(tab === i)} onClick={() => setTab(i)}>{t}</button>)}
+      </div>
+
+      <div style={{ maxWidth: 700, margin: "0 auto", padding: "20px 16px" }}>
+
+        {/* DASHBOARD */}
+        {tab === 0 && <>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 16 }}>
+            {[
+              { emoji: "🎯", val: `${doneGoals}/${GOALS.length}`, label: "Goals Done", color: "#10b981" },
+              { emoji: "⚡", val: `${doneHabits}/${HABITS.length}`, label: "Habits Today", color: "#f59e0b" },
+              { emoji: "🔥", val: `${pct}%`, label: "Progress", color: "#ec4899" },
+            ].map((s, i) => (
+              <div key={i} style={{ ...C.card, marginBottom: 0, textAlign: "center", padding: "14px 10px", border: `2px solid ${s.color}22` }}>
+                <div style={{ fontSize: 22 }}>{s.emoji}</div>
+                <div style={{ fontWeight: 900, fontSize: "1.1rem", color: s.color }}>{s.val}</div>
+                <div style={{ fontSize: "0.68rem", color: "#888", marginTop: 2 }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={C.card}>
+            <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "#333", marginBottom: 10 }}>Overall Glow Up Progress 🌸</div>
+            <div style={{ background: "#f0f0f0", borderRadius: 100, height: 14, overflow: "hidden" }}>
+              <div style={{ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg,#ff6b6b,#ffd166)", borderRadius: 100, transition: "width 0.5s" }} />
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "#888", marginTop: 6 }}>{pct}% of your goals achieved</div>
+          </div>
+
+          <div style={C.card}>
+            <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "#333", marginBottom: 14 }}>Progress by Area</div>
+            {AREAS.map(area => {
+              const ag = GOALS.filter(g => g.area === area.name);
+              const ad = ag.filter(g => data.goals[g.id]).length;
+              const ap = Math.round((ad / ag.length) * 100);
+              return (
+                <div key={area.name} style={{ marginBottom: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                    <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#444" }}>{area.name}</span>
+                    <span style={{ fontSize: "0.75rem", color: "#888" }}>{ad}/{ag.length}</span>
+                  </div>
+                  <div style={{ background: "#f0f0f0", borderRadius: 100, height: 8, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${ap}%`, background: area.color, borderRadius: 100, transition: "width 0.5s" }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>}
+
+        {/* GOALS */}
+        {tab === 1 && <>
+          <div style={{ fontWeight: 900, fontSize: "1.1rem", color: "#333", marginBottom: 4 }}>Your Glow Up Goals ✨</div>
+          <div style={{ fontSize: "0.78rem", color: "#888", marginBottom: 16 }}>Tap a goal to see how to achieve it</div>
+          {AREAS.map(area => (
+            <div key={area.name} style={{ marginBottom: 20 }}>
+              <div style={{ display: "inline-block", background: area.light, border: `1px solid ${area.border}`, color: area.color, fontWeight: 800, fontSize: "0.78rem", padding: "4px 14px", borderRadius: 100, marginBottom: 10 }}>{area.name}</div>
+              {GOALS.filter(g => g.area === area.name).map(g => (
+                <div key={g.id} style={{ background: "#fff", borderRadius: 14, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", marginBottom: 8, border: `2px solid ${data.goals[g.id] ? area.color : "transparent"}`, overflow: "hidden" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", cursor: "pointer" }} onClick={() => setExpanded(expanded === g.id ? null : g.id)}>
+                    <div onClick={e => { e.stopPropagation(); toggleGoal(g.id); }} style={{ width: 24, height: 24, borderRadius: 8, border: `2px solid ${data.goals[g.id] ? area.color : "#ddd"}`, background: data.goals[g.id] ? area.color : "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: "pointer", fontSize: 13, fontWeight: 900, color: "#fff" }}>
+                      {data.goals[g.id] ? "✓" : ""}
+                    </div>
+                    <span style={{ flex: 1, fontSize: "0.88rem", fontWeight: 600, color: data.goals[g.id] ? "#aaa" : "#333", textDecoration: data.goals[g.id] ? "line-through" : "none", lineHeight: 1.4 }}>{g.label}</span>
+                    <span style={{ color: "#ccc", fontSize: "0.8rem" }}>{expanded === g.id ? "▲" : "▼"}</span>
+                  </div>
+                  {expanded === g.id && (
+                    <div style={{ padding: "0 16px 14px 52px" }}>
+                      <div style={{ fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: area.color, marginBottom: 4 }}>How to achieve this</div>
+                      <div style={{ fontSize: "0.82rem", color: "#666", lineHeight: 1.7 }}>{g.how}</div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
+        </>}
+
+        {/* HABITS */}
+        {tab === 2 && <>
+          <div style={{ fontWeight: 900, fontSize: "1.1rem", color: "#333", marginBottom: 4 }}>Today's Habits 📅</div>
+          <div style={{ fontSize: "0.78rem", color: "#888", marginBottom: 16 }}>
+            {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })} · {doneHabits}/{HABITS.length} done
+          </div>
+          <div style={{ ...C.card, padding: "4px 0" }}>
+            {HABITS.map((h, i) => (
+              <div key={h.id} onClick={() => toggleHabit(h.id)} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderBottom: i < HABITS.length - 1 ? "1px solid #f5f5f5" : "none", cursor: "pointer", background: habitDone(h.id) ? "rgba(16,185,129,0.04)" : "transparent" }}>
+                <div style={{ width: 26, height: 26, borderRadius: 8, border: `2px solid ${habitDone(h.id) ? h.color : "#e0e0e0"}`, background: habitDone(h.id) ? h.color : "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 13, fontWeight: 900, color: "#fff" }}>
+                  {habitDone(h.id) ? "✓" : ""}
+                </div>
+                <span style={{ fontSize: "0.88rem", fontWeight: 500, color: habitDone(h.id) ? "#aaa" : "#333", textDecoration: habitDone(h.id) ? "line-through" : "none" }}>{h.label}</span>
+              </div>
+            ))}
+          </div>
+          {doneHabits === HABITS.length && (
+            <div style={{ background: "linear-gradient(135deg,#10b981,#06d6a0)", borderRadius: 16, padding: 20, textAlign: "center", color: "#fff" }}>
+              <div style={{ fontSize: 32 }}>🎉</div>
+              <div style={{ fontWeight: 900, fontSize: "1rem", marginTop: 6 }}>Perfect Day, Jasmine!</div>
+              <div style={{ fontSize: "0.82rem", opacity: 0.9, marginTop: 4 }}>You completed every habit today. You're glowing! ✨</div>
+            </div>
+          )}
+        </>}
+
+        {/* SKILLS */}
+        {tab === 3 && <>
+          <div style={{ fontWeight: 900, fontSize: "1.1rem", color: "#333", marginBottom: 4 }}>Skills Tracker 🚀</div>
+          <div style={{ fontSize: "0.78rem", color: "#888", marginBottom: 16 }}>Tap a level bar to update your progress</div>
+          {SKILLS.map(sk => {
+            const level = data.skills?.[sk.id] ?? 0;
+            return (
+              <div key={sk.id} style={C.card}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                  <span style={{ fontSize: 24 }}>{sk.emoji}</span>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: "0.92rem", color: "#333" }}>{sk.name}</div>
+                    <div style={{ fontSize: "0.72rem", color: "#3b82f6", fontWeight: 600 }}>{sk.levels[level]}</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                  {sk.levels.map((_, i) => (
+                    <div key={i} onClick={() => setSkill(sk.id, i)} style={{ flex: 1, height: 8, borderRadius: 100, cursor: "pointer", background: i <= level ? "linear-gradient(90deg,#3b82f6,#6366f1)" : "#eee", transition: "all 0.2s" }} />
+                  ))}
+                </div>
+                <div style={{ fontSize: "0.72rem", color: "#888" }}>Next: <span style={{ color: "#3b82f6", fontWeight: 600 }}>{level < 4 ? sk.levels[level + 1] : "Max level reached! 🏆"}</span></div>
+              </div>
+            );
+          })}
+        </>}
+
+        {/* SCHOOL */}
+        {tab === 4 && <>
+          <div style={{ fontWeight: 900, fontSize: "1.1rem", color: "#333", marginBottom: 16 }}>School Hub 📚</div>
+
+          <div style={C.card}>
+            <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "#ec4899", marginBottom: 12 }}>📝 Homework & Incomplete Work</div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+              <input value={hwInput} onChange={e => setHwInput(e.target.value)} onKeyDown={e => e.key === "Enter" && addHw()} placeholder="Add a task... (press Enter)" style={{ flex: 1, padding: "10px 14px", borderRadius: 10, border: "1.5px solid #f0f0f0", fontSize: "0.85rem", outline: "none", fontFamily: "inherit" }} />
+              <button onClick={addHw} style={{ padding: "10px 16px", borderRadius: 10, border: "none", background: "#ec4899", color: "#fff", fontWeight: 800, cursor: "pointer", fontSize: "1rem" }}>+</button>
+            </div>
+            {!(data.hw?.length) && <div style={{ fontSize: "0.8rem", color: "#ccc", textAlign: "center", padding: 10 }}>No tasks yet — add one above 🎉</div>}
+            {(data.hw || []).map((h, i) => (
+              <div key={h.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: i < data.hw.length - 1 ? "1px solid #f5f5f5" : "none" }}>
+                <div onClick={() => toggleHw(h.id)} style={{ width: 22, height: 22, borderRadius: 6, border: `2px solid ${h.done ? "#ec4899" : "#ddd"}`, background: h.done ? "#ec4899" : "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 11, fontWeight: 900, color: "#fff", flexShrink: 0 }}>{h.done ? "✓" : ""}</div>
+                <span style={{ flex: 1, fontSize: "0.85rem", color: h.done ? "#bbb" : "#333", textDecoration: h.done ? "line-through" : "none" }}>{h.text}</span>
+                <button onClick={() => delHw(h.id)} style={{ background: "none", border: "none", color: "#ddd", cursor: "pointer", fontSize: "1rem" }}>✕</button>
+              </div>
+            ))}
+          </div>
+
+          <div style={C.card}>
+            <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "#f59e0b", marginBottom: 12 }}>📅 Exam Countdown</div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+              <input value={examSub} onChange={e => setExamSub(e.target.value)} placeholder="Subject" style={{ flex: 1, minWidth: 100, padding: "10px 12px", borderRadius: 10, border: "1.5px solid #f0f0f0", fontSize: "0.82rem", outline: "none", fontFamily: "inherit" }} />
+              <input type="date" value={examDate} onChange={e => setExamDate(e.target.value)} style={{ padding: "10px 12px", borderRadius: 10, border: "1.5px solid #f0f0f0", fontSize: "0.82rem", outline: "none", fontFamily: "inherit" }} />
+              <button onClick={addExam} style={{ padding: "10px 16px", borderRadius: 10, border: "none", background: "#f59e0b", color: "#fff", fontWeight: 800, cursor: "pointer" }}>Add</button>
+            </div>
+            {!(data.exams?.length) && <div style={{ fontSize: "0.8rem", color: "#ccc", textAlign: "center", padding: 10 }}>No exams added yet</div>}
+            {(data.exams || []).slice().sort((a, b) => new Date(a.date) - new Date(b.date)).map(e => {
+              const d = daysUntil(e.date);
+              const col = d <= 3 ? "#ef4444" : d <= 7 ? "#f59e0b" : "#10b981";
+              return (
+                <div key={e.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: "1px solid #f5f5f5" }}>
+                  <div style={{ background: col, color: "#fff", borderRadius: 10, padding: "4px 10px", fontSize: "0.72rem", fontWeight: 800, flexShrink: 0 }}>{d > 0 ? `${d}d` : d === 0 ? "TODAY" : "PAST"}</div>
+                  <span style={{ flex: 1, fontSize: "0.85rem", fontWeight: 600, color: "#333" }}>{e.subject}</span>
+                  <span style={{ fontSize: "0.72rem", color: "#aaa" }}>{new Date(e.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>
+                  <button onClick={() => delExam(e.id)} style={{ background: "none", border: "none", color: "#ddd", cursor: "pointer" }}>✕</button>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={C.card}>
+            <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "#8b5cf6", marginBottom: 12 }}>📊 Subject Priority List</div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+              <input value={subInput} onChange={e => setSubInput(e.target.value)} onKeyDown={e => e.key === "Enter" && addSub()} placeholder="Add subject..." style={{ flex: 1, padding: "10px 14px", borderRadius: 10, border: "1.5px solid #f0f0f0", fontSize: "0.85rem", outline: "none", fontFamily: "inherit" }} />
+              <button onClick={addSub} style={{ padding: "10px 16px", borderRadius: 10, border: "none", background: "#8b5cf6", color: "#fff", fontWeight: 800, cursor: "pointer", fontSize: "1rem" }}>+</button>
+            </div>
+            {!(data.subjects?.length) && <div style={{ fontSize: "0.8rem", color: "#ccc", textAlign: "center", padding: 10 }}>Add your subjects above</div>}
+            {(data.subjects || []).map((s, i) => (
+              <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 0", borderBottom: i < data.subjects.length - 1 ? "1px solid #f5f5f5" : "none", flexWrap: "wrap" }}>
+                <span style={{ flex: 1, fontSize: "0.85rem", color: "#333", fontWeight: 600, minWidth: 80 }}>{s.text}</span>
+                {["high", "medium", "low"].map(p => (
+                  <button key={p} onClick={() => setSubPriority(s.id, p)} style={{ padding: "4px 10px", borderRadius: 100, border: "none", cursor: "pointer", fontSize: "0.68rem", fontWeight: 700, background: s.priority === p ? (p === "high" ? "#ef4444" : p === "medium" ? "#f59e0b" : "#10b981") : "#f0f0f0", color: s.priority === p ? "#fff" : "#aaa", transition: "all 0.2s" }}>{p}</button>
+                ))}
+                <button onClick={() => delSub(s.id)} style={{ background: "none", border: "none", color: "#ddd", cursor: "pointer", fontSize: "1rem" }}>✕</button>
+              </div>
+            ))}
+          </div>
+        </>}
+      </div>
+    </div>
+  );
+}
